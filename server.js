@@ -1,3 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+console.log("ENV KEYS:", Object.keys(process.env));
+console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
+
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
