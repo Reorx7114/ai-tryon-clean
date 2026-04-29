@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+require("dotenv").config();
 dotenv.config();
 
 console.log("MIJIANG TEST VERSION 123");
