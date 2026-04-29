@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Try-On for Korean Fashion</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,'Noto Sans TC',sans-serif;background:#fffaf4;color:#101322}main{max-width:1180px;margin:0 auto;padding:42px 22px}.tag{display:inline-block;background:#fff0df;color:#c2410c;border-radius:999px;padding:8px 14px;font-size:14px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;margin-bottom:28px}h1{font-size:58px;line-height:1.05;margin:20px 0 18px;letter-spacing:-2px}p{color:#46546c;font-size:18px;line-height:1.55}.status{background:#fff;border:1px solid #fed7aa;border-radius:22px;padding:28px;box-shadow:0 12px 34px rgba(15,23,42,.06)}.steps{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}.pill{background:#fff;border:1px solid #eadfd3;border-radius:18px;padding:13px 18px;color:#334155}.grid{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:24px}.card{background:#fff;border:1px solid #eadfd3;border-radius:22px;padding:22px;box-shadow:0 8px 26px rgba(15,23,42,.05)}.upload{border:1.5px dashed #cbd5e1;border-radius:20px;min-height:330px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f8fafc;cursor:pointer;text-align:center;color:#64748b}.upload img{width:100%;height:100%;object-fit:cover}.card h2{margin:0 0 8px;font-size:24px}.field{margin:16px 0}.field label{display:block;margin-bottom:8px;font-weight:700}.field input,.field textarea{width:100%;border:1px solid #e5e7eb;border-radius:14px;padding:14px 16px;font-size:16px;background:#fff}.field textarea{min-height:110px;resize:vertical}.btns{display:flex;gap:14px}.btn{border:0;border-radius:15px;padding:15px 24px;font-weight:700;font-size:18px;cursor:pointer}.primary{background:#fb4b14;color:white}.secondary{background:#fff;border:1px solid #e5e7eb}.notice{margin-top:18px;background:#fff7ed;border-radius:16px;padding:16px;color:#c2410c}.result{margin-top:28px}.resultBox{min-height:520px;border-radius:28px;background:#f8fafc;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;overflow:hidden}.resultBox img{width:100%;max-height:900px;object-fit:contain}.small{font-size:14px;color:#64748b}a.download{display:inline-block;margin-top:14px;color:#c2410c;font-weight:700}.loading{opacity:.7;pointer-events:none}@media(max-width:900px){.hero,.grid{grid-template-columns:1fr}h1{font-size:40px}}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <span class="tag">Korean Fashion AI Try-On</span>
+      <h1>AI Try-On for Korean Fashion｜See the outfit before buying</h1>
+      <p>Upload a customer photo and a product image to create a realistic virtual try-on preview. Built for supplier demos, product testing, and sales conversion.</p>
+      <div class="steps"><div class="pill">1. Upload photo</div><div class="pill">2. Upload product</div><div class="pill">3. Try now</div></div>
+      <p class="small">照片僅用於本次試穿預覽。AI 試穿為示意，實際版型與顏色以商品為準。</p>
+    </div>
+    <div class="status">
+      <h2>Ready for supplier demo</h2>
+      <p>Product image input, try-on button, preview, and AI backend entry are ready.</p>
+      <div id="health" class="notice">Checking AI status...</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Customer Photo</h2><p class="small">正面或半身照片效果較好</p>
+      <input id="personInput" type="file" accept="image/*" hidden>
+      <div id="personBox" class="upload">點擊上傳人物照片</div>
+    </div>
+    <div class="card">
+      <h2>Product Image</h2><p class="small">商品平拍、白底或模特照都可</p>
+      <input id="clothingInput" type="file" accept="image/*" hidden>
+      <div id="clothingBox" class="upload">點擊上傳商品圖片</div>
+    </div>
+    <div class="card" id="settingsCard">
+      <h2>Try-On Settings</h2>
+      <div class="field"><label>Product Name</label><input id="productName" value="Korean Slim-Fit Knit Top"></div>
+      <div class="field"><label>Try-On Requirement</label><textarea id="styleNote">Keep the product silhouette and color. Make the outfit look natural, realistic, and not overly distorted.</textarea></div>
+      <div class="btns"><button id="tryBtn" class="btn primary">✨ Try Now</button><button id="resetBtn" class="btn secondary">Reset</button></div>
+      <div id="message" class="notice">尚未產生試穿圖。</div>
+    </div>
+  </section>
+
+  <section class="card result">
+    <h2>Try-On Preview</h2>
+    <p class="small">Download it for product review, supplier discussion, or internal testing.</p>
+    <div id="resultBox" class="resultBox">結果會顯示在這裡</div>
+    <a id="downloadLink" class="download" style="display:none" download="ai-tryon-result.png">Download result</a>
+  </section>
+</main>
+<script>
+let personImage='', clothingImage='';
+const $ = id => document.getElementById(id);
+async function toDataUrl(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);});}
+function bindUpload(inputId, boxId, setter){const input=$(inputId), box=$(boxId);box.onclick=()=>input.click();input.onchange=async()=>{const f=input.files?.[0];if(!f)return;const url=await toDataUrl(f);setter(url);box.innerHTML=`<img src="${url}" alt="uploaded">`;};}
+bindUpload('personInput','personBox',v=>personImage=v);bindUpload('clothingInput','clothingBox',v=>clothingImage=v);
+async function checkHealth(){try{const r=await fetch('/api/health');const j=await r.json();$('health').textContent=j.hasOpenAIKey?`Live AI mode：已偵測到 OPENAI_API_KEY，模型 ${j.model}`:'Demo mode：尚未設定 OPENAI_API_KEY';}catch{$('health').textContent='Health check failed';}}
+checkHealth();
+$('tryBtn').onclick=async()=>{if(!personImage||!clothingImage){$('message').textContent='請先上傳人物照片與商品圖片。';return;}const btn=$('tryBtn');btn.textContent='Generating...';btn.classList.add('loading');$('message').textContent='AI 正在產生中，請稍等...';try{const r=await fetch('/api/tryon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({personImage,clothingImage,productName:$('productName').value,styleNote:$('styleNote').value})});const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'生成失敗');$('resultBox').innerHTML=`<img src="${j.imageUrl}" alt="AI try-on result">`;$('message').textContent=j.demoMode?j.message:'已成功產生真實 AI 試穿圖。';$('downloadLink').href=j.imageUrl;$('downloadLink').style.display='inline-block';}catch(e){$('message').textContent='錯誤：'+e.message;}finally{btn.textContent='✨ Try Now';btn.classList.remove('loading');}};
+$('resetBtn').onclick=()=>location.reload();
+</script>
+</body>
+</html>
