@@ -1,3 +1,5 @@
+console.log("HAS MIJIANG_TEST:", process.env.MIJIANG_TEST);
+
 import dotenv from 'dotenv';
 dotenv.config();
 
